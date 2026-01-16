@@ -3,9 +3,14 @@ package com.booking_API.demo.services;
 import com.booking_API.demo.dto.Event;
 import com.booking_API.demo.dto.EventResponse;
 import com.booking_API.demo.repository.EventRepository;
+import com.sun.jdi.request.EventRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.List;
 
@@ -14,6 +19,12 @@ import java.util.List;
 public class EventQueryService {
 
     private final EventRepository eventRepository;
+
+    @Autowired
+    AuthenticationManager authManager;
+
+    @Autowired
+    JwtService jwtService;
 
     public EventQueryService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
@@ -35,10 +46,20 @@ public class EventQueryService {
 
     private EventResponse toResponse(Event event){
         EventResponse dto = new EventResponse();
-        dto.setEventId(event.getId());
+        dto.setEventId(event.getEventId());
         dto.setMovieName(event.getMovieName());
-        dto.setStartTime(event.getStartTime());
+        dto.setStartTime(event.getStart_time());
         return dto;
     }
 
+    @Transactional
+    public String createEvent(Event eventRequest) {
+        try {
+            eventRepository.save(eventRequest);
+            return "Event Created with eventID " + eventRequest.getEventId();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw e; // 🔥 IMPORTANT
+        }
+    }
 }

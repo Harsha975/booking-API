@@ -1,19 +1,20 @@
 package com.booking_API.demo.dto;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+
 @Entity
 @Table(name = "events")
+@Data
 public class Event {
 
     @Id
     @Column(name = "event_Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long eventId;
 
     @Column(name = "movie_name" , nullable = false)
@@ -22,15 +23,9 @@ public class Event {
     @Column(name = "start_time", nullable = false)
     private LocalDateTime start_time;
 
-    public Long getId() {
-        return eventId;
-    }
+    @Column(name = "end_time" , nullable = false)
+    private  LocalDateTime end_time;
 
-    public LocalDateTime getStartTime() {
-        return start_time;
-    }
-
-    public String getMovieName() {
-        return movieName;
-    }
+    @Column(name = "city" , nullable = false)
+    private String city;
 }

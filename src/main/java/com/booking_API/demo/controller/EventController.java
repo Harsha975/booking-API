@@ -1,11 +1,11 @@
 package com.booking_API.demo.controller;
 
+import com.booking_API.demo.dto.Event;
 import com.booking_API.demo.dto.EventResponse;
 import com.booking_API.demo.services.EventQueryService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,5 +34,10 @@ public class EventController {
     @GetMapping("/{eventId}")
     public EventResponse getEvent(@PathVariable Long eventId) {
         return eventQueryService.getEvent(eventId);
+    }
+
+    @PostMapping("/createEvent")
+    public ResponseEntity<?>  createEvent(@RequestBody Event eventBody) {
+        return new ResponseEntity<>(eventQueryService.createEvent(eventBody), HttpStatus.CREATED);
     }
 }
